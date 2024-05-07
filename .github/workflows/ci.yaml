@@ -29,7 +29,7 @@ jobs:
           output: ${{ env.REPORT_FILE_NAME }}
           severity: 'CRITICAL'
       - name: Send fail notification to Slack
-        if: ${{ hashFiles(${{ env.REPORT_FILE_NAME }}) != '' }}
+        if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
