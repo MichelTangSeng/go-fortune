@@ -27,6 +27,7 @@ jobs:
           format: 'table'
           ignore-unfixed: true
           output: ${{ env.REPORT_FILE_NAME }}
+          severity: 'CRITICAL'
       - name: Send fail notification to Slack
         if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
         uses: rtCamp/action-slack-notify@v2
