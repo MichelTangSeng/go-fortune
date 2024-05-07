@@ -32,13 +32,14 @@ jobs:
         uses: rtCamp/action-slack-notify@v2
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-      - name: Upload report to Slack
-        if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload-file-path: ${{ env.REPORT_FILE_NAME }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_FILE_UPLOAD: ${{ env.REPORT_FILE_NAME }}
+      # - name: Upload report to Slack
+      #   if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
+      #   uses: slackapi/slack-github-action@v1.26.0
+      #   with:
+      #     payload-file-path: ${{ env.REPORT_FILE_NAME }}
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
       - name: Cancel pipleline
         if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
         run: exit 1
