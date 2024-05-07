@@ -70,7 +70,8 @@ jobs:
       - name: Send successful notification to Slack
         uses: rtCamp/action-slack-notify@v2
         env:
-          SLACK_MESSAGE: '*Name:* ${{ env.NAME}}\n*Matriculation:* ${{env.MATRICULATION}}\n*Email:* ${{env.EMAIL}}\n*Git:* ${{ github.server_url }}/${{ github.repository }}\n*Image:* https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/{{ env.IMAGE_NAME }}'
+          SLACK_MESSAGE: '*Name:* ${{ env.NAME }}\n*Matriculation:* ${{env.MATRICULATION}}\n*Email:* ${{env.EMAIL}}\n*Git:* ${{ github.server_url }}/${{ github.repository }}\n*Image:* https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/{{ env.IMAGE_NAME }}'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          SLACKIFY_MARKDOWN: true
         
   
