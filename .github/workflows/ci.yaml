@@ -1,0 +1,72 @@
+name: CI
+on:
+  push:
+    branches:
+      - release/v[0-9]+.[0-9]+
+
+env:
+  NAME: fred
+  MATRICULATION: abc123
+  EMAIL: fred@gmail.com
+  IMAGE_NAME: go-fortune
+  REPORT_FILE_NAME: trivy-report.txt
+
+jobs:
+  CI:
+    name: CI
+    runs-on: ubuntu-20.04
+    if: ${{ !startsWith(github.event.head_commit.message, '#NORUN') }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Run Trivy vulnerability scanner
+        id: scan
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          format: 'table'
+          ignore-unfixed: true
+          output: ${{ env.REPORT_FILE_NAME }}
+      - name: Send fail notification to Slack
+        if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+      - name: Upload report to Slack
+        if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          payload-file-path: ${{ env.REPORT_FILE_NAME }}
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      - name: Cancel pipleline
+        if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
+        run: exit 1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        id: build-and-push
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@v3.5.0
+      - name: Sign the image
+        run: |
+          cosign sign --yes --key env://COSIGN_PRIVATE_KEY ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+        env:
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
+          DIGEST: ${{ steps.build-and-push.outputs.digest }}
+      - name: Send successful notification to Slack
+        uses: rtCamp/action-slack-notify@v2
+        env:
+          SLACK_MESSAGE: '*Name:* ${{ env.NAME}}\n*Matriculation:* ${{env.MATRICULATION}}\n*Email:* ${{env.EMAIL}}\n*Git:* ${{ github.server_url }}/${{ github.repository }}\n*Image:* https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/{{ env.IMAGE_NAME }}'
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        
+  
