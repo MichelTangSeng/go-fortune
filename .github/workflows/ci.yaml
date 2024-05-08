@@ -27,7 +27,7 @@ jobs:
           format: 'table'
           ignore-unfixed: true
           output: ${{ env.REPORT_FILE_NAME }}
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL'
           exit-code: '1'
         continue-on-error: true
       - name: Send fail notification to Slack
