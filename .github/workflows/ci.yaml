@@ -27,7 +27,7 @@ jobs:
           format: 'table'
           ignore-unfixed: true
           output: ${{ env.REPORT_FILE_NAME }}
-          severity: 'CRITICAL,HIGH'
+          severity: 'CRITICAL,HIGH,MEDIUM'
       - name: Send fail notification to Slack
         if: steps.scan.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
@@ -75,5 +75,6 @@ jobs:
           SLACK_MESSAGE: '*Name:* ${{ env.NAME }}\n*Matriculation:* ${{env.MATRICULATION}}\n*Email:* ${{env.EMAIL}}\n*Git:* ${{ github.server_url }}/${{ github.repository }} \n*Image:* https://hub.docker.com/r/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}'
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACKIFY_MARKDOWN: true
+          SLACK_TITLE: Image build and signed
         
   
