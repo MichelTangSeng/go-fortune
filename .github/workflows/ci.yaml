@@ -37,7 +37,7 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           SLACK_FILE_UPLOAD: ${{ env.REPORT_FILE_NAME }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
-          SLACK_CHANNEL: test-submission
+          SLACK_CHANNEL: submission
           SLACK_MESSAGE: Failed trivy scan, see uploaded report
           SLACK_TITLE: Scan failed - ${{ env.NAME }}
       # - name: Upload report to Slack
