@@ -5,9 +5,9 @@ on:
       - release/v[0-9]+.[0-9]+
 
 env:
-  NAME: fred
-  MATRICULATION: abc123
-  EMAIL: fred@gmail.com
+  NAME: Zheng Zhiyao
+  MATRICULATION: A0290829R
+  EMAIL: e1327860@u.nus.edu
   IMAGE_NAME: go-fortune
   REPORT_FILE_NAME: trivy-report.txt
 
