@@ -27,7 +27,7 @@ jobs:
           format: 'table'
           ignore-unfixed: true
           output: ${{ env.REPORT_FILE_NAME }}
-          severity: 'CRITICAL'
+          severity: 'CRITICAL,HIGH'
       - name: Send fail notification to Slack
         if: steps.scan.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
@@ -36,6 +36,8 @@ jobs:
           SLACK_FILE_UPLOAD: ${{ env.REPORT_FILE_NAME }}
           SLACK_TOKEN: ${{ secrets.SLACK_TOKEN }}
           SLACK_CHANNEL: test-submission
+          SLACK_MESSAGE: Failed trivy scan, see uploaded report
+          SLACK_TITLE: Scan failed - ${{ env.NAME }}
       # - name: Upload report to Slack
       #   if: ${{ hashFiles(env.REPORT_FILE_NAME) != '' }}
       #   uses: slackapi/slack-github-action@v1.26.0
