@@ -28,6 +28,7 @@ jobs:
           ignore-unfixed: true
           output: ${{ env.REPORT_FILE_NAME }}
           severity: 'CRITICAL,HIGH,MEDIUM'
+          exit-code: '1'
       - name: Send fail notification to Slack
         if: steps.scan.outcome == 'failure'
         uses: rtCamp/action-slack-notify@v2
